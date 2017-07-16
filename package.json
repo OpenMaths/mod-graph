@@ -1,7 +1,7 @@
 {
-  "name": "@openmaths/seed",
-  "version": "0.0.2",
-  "description": "The Module Seeder",
+  "name": "@openmaths/graph",
+  "version": "0.0.0",
+  "description": "The Graph Module",
   "main": "./dist/main.js",
   "typings": "./dist/main.d.ts",
   "dependencies": {
