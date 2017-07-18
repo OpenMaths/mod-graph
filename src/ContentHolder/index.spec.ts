@@ -3,9 +3,9 @@ import { None } from '@threestup/monads'
 
 import ContentHolder from '.'
 
-describe('Models/Grid/ContentHolder', () => {
+describe('ContentHolder', () => {
   describe('constructor', () => {
-    test('throws a Reference Error is rawUoIConstructor is None', () => {
+    test('throws a Reference Error if rawUoIConstructor is None', () => {
       const event = new CreateContentHolderEvent(
         'graphId',
         'parentId',
@@ -25,14 +25,14 @@ describe('Models/Grid/ContentHolder', () => {
       expect(subject.nodeId).toEqual(event.nodeId)
     })
 
-    test('empty list of children is created', () => {
+    test('no child is present', () => {
       const event = new CreateContentHolderEvent(
         'graphId',
         'parentId',
         'RawUoIConstructor',
       )
       const subject = new ContentHolder(event)
-      expect(subject.children).toEqual([])
+      expect(subject.child).toBeUndefined()
     })
 
     test('rawUoIConstructor gets correctly assigned', () => {
@@ -47,17 +47,4 @@ describe('Models/Grid/ContentHolder', () => {
       )
     })
   })
-
-  // describe('insertChild', () => {
-  //   test('returns a reference to itself', () => {
-  //     const event = new CreateContentHolderEvent(
-  //       'graphId',
-  //       'parentId',
-  //       'RawUoIConstructor',
-  //     )
-  //     const contentHolder = new ContentHolder(event)
-  //     const subject = contentHolder.insertChild()
-  //     expect(subject instanceof ContentHolder).toEqual(true)
-  //   })
-  // })
 })

@@ -3,9 +3,9 @@ import { is_some } from '@threestup/monads'
 
 import * as I from '../interface'
 
-class ContentHolder implements I.Node {
+class ContentHolder implements I.NodeSingle {
   readonly nodeId: string
-  children: never[]
+  child: never
   rawUoIConstructor: string
 
   constructor(event: CreateContentHolderEvent) {
@@ -13,18 +13,19 @@ class ContentHolder implements I.Node {
 
     if (is_some(rawUoIConstructor)) {
       this.nodeId = nodeId
-      this.children = []
       this.rawUoIConstructor = rawUoIConstructor.unwrap()
     } else {
-      throw new ReferenceError(`Cannot find \`rawUoIConstructor\` in ${event}`)
+      throw new ReferenceError(
+        `Cannot find \`rawUoIConstructor\` for ${event.nodeId}`,
+      )
     }
   }
 
-  insertChild(node: never, insertIndex: number) {
+  insertChild(node: never) {
     return this
   }
 
-  removeChild(nodeId: string) {
+  removeChild() {
     return this
   }
 }
