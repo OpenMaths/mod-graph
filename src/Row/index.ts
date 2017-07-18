@@ -30,6 +30,7 @@ class Row implements I.Node<Column> {
         return this
       } else {
         // @TODO more informative message
+        // @TODO for all error messages and logs, put it into a constants folder and snap test
         throw new RangeError(
           `Cannot add node at index greater than current number of children in ${this
             .nodeId}`,
