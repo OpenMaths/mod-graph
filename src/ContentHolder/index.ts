@@ -5,24 +5,24 @@ import * as I from '../interface'
 
 class ContentHolder implements I.Node {
   readonly nodeId: string
-           children: any[]
-           rawUoIConstructor: string
+  children: never[]
+  rawUoIConstructor: string
 
-  constructor (event: any) {
+  constructor(event: CreateContentHolderEvent) {
     if (is_none(event.rawUoIConstructor)) {
       throw new ReferenceError(`Cannot find \`rawUoIConstructor\` in ${event}`)
     } else {
-      this.nodeId            = event.nodeId
-      this.children          = []
-      this.rawUoIConstructor = event.rawUoIConstructor.unwrap()
+      this.nodeId = event.nodeId
+      this.children = []
+      this.rawUoIConstructor = event.rawUoIConstructor.unwrap() as string
     }
   }
 
-  insertChild (...args) {
+  insertChild(node: never, insertIndex: number) {
     return this
   }
 
-  removeChild (...args) {
+  removeChild(nodeId: string) {
     return this
   }
 }

@@ -5,6 +5,7 @@
   "main": "./dist/main.js",
   "typings": "./dist/main.d.ts",
   "dependencies": {
+    "@openmaths/graph-events": "0.0.4",
     "@threestup/monads": "^0.1.0"
   },
   "devDependencies": {
