@@ -42,7 +42,9 @@ describe('Models/Grid/ContentHolder', () => {
         'RawUoIConstructor',
       )
       const subject = new ContentHolder(event)
-      expect(subject.rawUoIConstructor).toEqual(event.rawUoIConstructor)
+      expect(subject.rawUoIConstructor).toEqual(
+        event.rawUoIConstructor.unwrap(),
+      )
     })
   })
 

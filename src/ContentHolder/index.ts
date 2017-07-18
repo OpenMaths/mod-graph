@@ -1,5 +1,5 @@
 import { CreateContentHolderEvent } from '@openmaths/graph-events'
-import { is_none } from '@threestup/monads'
+import { is_some } from '@threestup/monads'
 
 import * as I from '../interface'
 
@@ -9,12 +9,14 @@ class ContentHolder implements I.Node {
   rawUoIConstructor: string
 
   constructor(event: CreateContentHolderEvent) {
-    if (is_none(event.rawUoIConstructor)) {
-      throw new ReferenceError(`Cannot find \`rawUoIConstructor\` in ${event}`)
-    } else {
-      this.nodeId = event.nodeId
+    const { nodeId, rawUoIConstructor } = event
+
+    if (is_some(rawUoIConstructor)) {
+      this.nodeId = nodeId
       this.children = []
-      this.rawUoIConstructor = event.rawUoIConstructor.unwrap() as string
+      this.rawUoIConstructor = rawUoIConstructor.unwrap()
+    } else {
+      throw new ReferenceError(`Cannot find \`rawUoIConstructor\` in ${event}`)
     }
   }
 
