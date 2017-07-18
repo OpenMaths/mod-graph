@@ -5,14 +5,16 @@ import * as I from '../interface'
 
 class ContentHolder implements I.NodeSingle {
   readonly nodeId: string
+  readonly index: number
   child: never
   rawUoIConstructor: string
 
   constructor(event: CreateContentHolderEvent) {
-    const { nodeId, rawUoIConstructor } = event
+    const { nodeId, rawUoIConstructor, insertIndex } = event
 
     if (is_some(rawUoIConstructor)) {
       this.nodeId = nodeId
+      this.index = insertIndex.unwrap_or(0)
       this.rawUoIConstructor = rawUoIConstructor.unwrap()
     } else {
       throw new ReferenceError(

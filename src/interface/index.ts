@@ -1,5 +1,6 @@
 export interface BaseNode {
   readonly nodeId: string
+  readonly index: number
 }
 
 export interface Node<T = never> extends BaseNode {

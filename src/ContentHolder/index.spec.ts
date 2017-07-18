@@ -25,6 +25,16 @@ describe('ContentHolder', () => {
       expect(subject.nodeId).toEqual(event.nodeId)
     })
 
+    test('index gets correctly assigned', () => {
+      const event = new CreateContentHolderEvent(
+        'graphId',
+        'parentId',
+        'RawUoIConstructor',
+      )
+      const subject = new ContentHolder(event)
+      expect(subject.index).toEqual(0)
+    })
+
     test('no child is present', () => {
       const event = new CreateContentHolderEvent(
         'graphId',

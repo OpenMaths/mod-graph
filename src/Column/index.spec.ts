@@ -16,6 +16,12 @@ describe('Column', () => {
       expect(subject.parentId).toEqual(event.parentId)
     })
 
+    test('index gets correctly assigned', () => {
+      const event = new CreateColumnEvent('graphId', 'parentId', 42)
+      const subject = new ContentHolder(event)
+      expect(subject.index).toEqual(event.insertIndex.unwrap())
+    })
+
     test('a null reference is assigned to the child', () => {
       const event = new CreateColumnEvent('graphId', 'parentId', 0)
       const subject = new ContentHolder(event)

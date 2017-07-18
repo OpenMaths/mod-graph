@@ -2,16 +2,20 @@ import { CreateColumnEvent } from '@openmaths/graph-events'
 
 import * as I from '../interface'
 
-export type Child = any // Container|ContentHolder
+export type Child = any // @TODO to become Container | ContentHolder
 
 export default class Column<T = Child> implements I.NodeSingle<T> {
   readonly nodeId: string
   readonly parentId: string
+  readonly index: number
   child: T | null
 
   constructor(event: CreateColumnEvent) {
-    this.nodeId = event.nodeId
-    this.parentId = event.parentId
+    const { nodeId, parentId, insertIndex } = event
+
+    this.nodeId = nodeId
+    this.parentId = parentId
+    this.index = insertIndex.unwrap_or(0)
     this.child = null
   }
 
