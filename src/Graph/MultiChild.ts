@@ -1,12 +1,12 @@
 import { GraphEvent } from '@openmaths/graph-events'
+import {
+  throwIfFalse,
+  throwIfPresent,
+  throwIfNegativeInteger,
+} from '@openmaths/utils'
 
 import { ErrorMessage } from '../Constants'
 import { BaseNode } from '../types'
-
-// @TODO import from generic utils
-const throwIfPresent = (...args: any[]) => false
-const throwIfFalse = (...args: any[]) => false
-const throwIfNegativeInteger = (...args: any[]) => false
 
 class MultiChild<T extends BaseNode> implements BaseNode {
   children: T[]
@@ -34,7 +34,7 @@ class MultiChild<T extends BaseNode> implements BaseNode {
   }
 
   getChildByNodeId(nodeId: string): T | undefined {
-    return this.children.find(child => child.nodeId === nodeId);
+    return this.children.find(child => child.nodeId === nodeId)
   }
 
   getChildIndexByNodeId(nodeId: string): number {

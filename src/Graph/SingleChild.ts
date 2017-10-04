@@ -1,10 +1,8 @@
 import { GraphEvent } from '@openmaths/graph-events'
+import { throwIfPresent } from '@openmaths/utils'
 
 import { ErrorMessage } from '../Constants'
 import { BaseNode } from '../types'
-
-// @TODO import from generic utils
-const throwIfPresent = (...args: any[]) => false
 
 class SingleChild<T extends BaseNode> implements BaseNode {
   child: T | null
