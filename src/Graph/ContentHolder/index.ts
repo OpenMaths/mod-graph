@@ -1,6 +1,6 @@
-import { CreateContentHolderEvent } from '@openmaths/graph-events'
+import { CreateContentHolderEvent } from "@openmaths/graph-events"
 
-import Leaf from '../Leaf'
+import Leaf from "../Leaf"
 
 class ContentHolder extends Leaf {
   rawUoIConstructor: string

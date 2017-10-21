@@ -1,6 +1,6 @@
-import { GraphEvent } from '@openmaths/graph-events'
+import { GraphEvent } from "@openmaths/graph-events"
 
-import { BaseNode } from '../types'
+import { BaseNode } from "../types"
 
 class Leaf implements BaseNode {
   createdAt: Date

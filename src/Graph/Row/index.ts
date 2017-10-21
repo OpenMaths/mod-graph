@@ -1,7 +1,7 @@
-import { CreateRowEvent } from '@openmaths/graph-events'
+import { CreateRowEvent } from "@openmaths/graph-events"
 
-import Column from '../Column'
-import MultiChild from '../MultiChild'
+import Column from "../Column"
+import MultiChild from "../MultiChild"
 
 class Row extends MultiChild<Column> {
   constructor(event: CreateRowEvent) {

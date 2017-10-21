@@ -1,8 +1,8 @@
-import { GraphEvent } from '@openmaths/graph-events'
-import { throwIfPresent } from '@openmaths/utils'
+import { GraphEvent } from "@openmaths/graph-events"
+import { throwIfPresent } from "@openmaths/utils"
 
-import { ErrorMessage } from '../Constants'
-import { BaseNode } from '../types'
+import { ErrorMessage } from "../Constants"
+import { BaseNode } from "../types"
 
 class SingleChild<T extends BaseNode> implements BaseNode {
   child: T | null

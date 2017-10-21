@@ -1,8 +1,8 @@
-import { CreateColumnEvent } from '@openmaths/graph-events'
+import { CreateColumnEvent } from "@openmaths/graph-events"
 
-import Container from '../Container'
-import ContentHolder from '../ContentHolder'
-import SingleChild from '../SingleChild'
+import Container from "../Container"
+import ContentHolder from "../ContentHolder"
+import SingleChild from "../SingleChild"
 
 type Child = Container | ContentHolder
 
