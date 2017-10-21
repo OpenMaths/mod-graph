@@ -2,8 +2,9 @@ import { GraphEvent } from '@openmaths/graph-events'
 import {
   throwIfFalse,
   throwIfPresent,
-  throwIfNegativeInteger,
+  isNonNegativeInteger,
 } from '@openmaths/utils'
+import { Ok, Err, Result } from '@threestup/monads'
 
 import { ErrorMessage } from '../Constants'
 import { BaseNode } from '../types'
@@ -37,12 +38,11 @@ class MultiChild<T extends BaseNode> implements BaseNode {
     return this.children.find(child => child.nodeId === nodeId)
   }
 
-  getChildIndexByNodeId(nodeId: string): number {
+  getChildIndexByNodeId(nodeId: string): Result<number, string> {
     const index = this.children.findIndex(child => child.nodeId === nodeId)
 
-    throwIfNegativeInteger(index, ErrorMessage.NodeIdNotFound(nodeId))
-
-    return index
+    return isNonNegativeInteger(index)
+      ? Ok(index) : Err(ErrorMessage.NodeIdNotFound(nodeId))
   }
 
   isInsertIndexValid(index: number): boolean {
@@ -67,7 +67,12 @@ class MultiChild<T extends BaseNode> implements BaseNode {
 
   removeChild(nodeId: string): MultiChild<T> {
     const index = this.getChildIndexByNodeId(nodeId)
-    this.children.splice(index, 1)
+
+    index.match({
+      ok: _ => this.children.splice(_, 1),
+      err: _ => { throw new Error(_) }
+    })
+
     return this
   }
 }
