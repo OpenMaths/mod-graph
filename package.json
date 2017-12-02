@@ -13,17 +13,17 @@
   },
   "dependencies": {
     "@openmaths/graph-events": "^1.1.0",
-    "@openmaths/utils": "^0.4.0",
-    "@threestup/monads": "^0.2.4"
+    "@openmaths/utils": "^1.0.0",
+    "@threestup/monads": "^0.3.1"
   },
   "devDependencies": {
-    "@types/jest": "^21.1.0",
-    "@types/node": "^8.0.30",
-    "jest": "^21.1.0",
-    "prettier": "^1.7.0",
-    "prettier-standard": "^6.0.0",
-    "ts-jest": "^21.0.1",
-    "typescript": "^2.5.2"
+    "@types/jest": "^21.1.8",
+    "@types/node": "^8.0.53",
+    "jest": "^21.2.1",
+    "prettier": "^1.8.2",
+    "prettier-standard": "^7.0.3",
+    "ts-jest": "^21.2.4",
+    "typescript": "^2.6.2"
   },
   "repository": {
     "type": "git",
