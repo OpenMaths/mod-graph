@@ -70,9 +70,9 @@ class MultiChild<T extends BaseNode> implements BaseNode {
     const index = this.getChildIndexByNodeId(nodeId)
 
     index.match({
-      ok: _ => this.children.splice(_, 1),
-      err: _ => {
-        throw new Error(_)
+      ok: i => this.children.splice(i, 1),
+      err: e => {
+        throw new Error(e)
       },
     })
 
