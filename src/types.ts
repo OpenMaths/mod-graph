@@ -1,7 +1,7 @@
 export interface BaseNode {
-  createdAt: Date
+  createdAt: string
   index: number
-  modifiedAt: Date
+  modifiedAt: string
   nodeId: string
   parentId: string
   touch(): BaseNode

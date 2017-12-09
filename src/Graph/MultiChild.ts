@@ -11,9 +11,9 @@ import { BaseNode } from "../types"
 
 class MultiChild<T extends BaseNode> implements BaseNode {
   children: T[]
-  createdAt: Date
+  createdAt: string
   index: number
-  modifiedAt: Date
+  modifiedAt: string
   nodeId: string
   parentId: string
 
@@ -21,7 +21,7 @@ class MultiChild<T extends BaseNode> implements BaseNode {
     const { createdAt, insertIndex, nodeId, parentId } = event
 
     this.children = []
-    this.createdAt = createdAt
+    this.createdAt = createdAt.toISOString()
     this.index = insertIndex
     this.nodeId = nodeId
     this.parentId = parentId
@@ -30,7 +30,7 @@ class MultiChild<T extends BaseNode> implements BaseNode {
   }
 
   touch(): MultiChild<T> {
-    this.modifiedAt = new Date()
+    this.modifiedAt = new Date().toISOString()
     return this
   }
 
@@ -63,7 +63,7 @@ class MultiChild<T extends BaseNode> implements BaseNode {
     )
 
     this.children.splice(insertIndex, 0, child)
-    return this
+    return this.touch()
   }
 
   removeChild(nodeId: string): MultiChild<T> {
@@ -76,7 +76,7 @@ class MultiChild<T extends BaseNode> implements BaseNode {
       },
     })
 
-    return this
+    return this.touch()
   }
 }
 

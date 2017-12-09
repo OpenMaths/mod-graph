@@ -6,9 +6,9 @@ import { BaseNode } from "../types"
 
 class SingleChild<T extends BaseNode> implements BaseNode {
   child: T | null
-  createdAt: Date
+  createdAt: string
   index: number
-  modifiedAt: Date
+  modifiedAt: string
   nodeId: string
   parentId: string
 
@@ -16,7 +16,7 @@ class SingleChild<T extends BaseNode> implements BaseNode {
     const { createdAt, insertIndex, nodeId, parentId } = event
 
     this.child = null
-    this.createdAt = createdAt
+    this.createdAt = createdAt.toISOString()
     this.index = insertIndex
     this.nodeId = nodeId
     this.parentId = parentId
@@ -25,7 +25,7 @@ class SingleChild<T extends BaseNode> implements BaseNode {
   }
 
   touch(): SingleChild<T> {
-    this.modifiedAt = new Date()
+    this.modifiedAt = new Date().toISOString()
     return this
   }
 
@@ -33,12 +33,12 @@ class SingleChild<T extends BaseNode> implements BaseNode {
     throwIfPresent(this.child, ErrorMessage.CannotInsertChild(child.nodeId))
 
     this.child = child
-    return this
+    return this.touch()
   }
 
   removeChild(): SingleChild<T> {
     this.child = null
-    return this
+    return this.touch()
   }
 }
 

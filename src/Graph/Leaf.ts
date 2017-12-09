@@ -3,16 +3,16 @@ import { GraphEvent } from "@openmaths/graph-events"
 import { BaseNode } from "../types"
 
 class Leaf implements BaseNode {
-  createdAt: Date
+  createdAt: string
   index: number
-  modifiedAt: Date
+  modifiedAt: string
   nodeId: string
   parentId: string
 
   constructor(event: GraphEvent) {
     const { createdAt, nodeId, parentId } = event
 
-    this.createdAt = createdAt
+    this.createdAt = createdAt.toISOString()
     this.index = 0
     this.nodeId = nodeId
     this.parentId = parentId
@@ -21,8 +21,8 @@ class Leaf implements BaseNode {
   }
 
   touch(): Leaf {
-    this.modifiedAt = new Date()
-    return this
+    this.modifiedAt = new Date().toISOString()
+    return this.touch()
   }
 }
 
