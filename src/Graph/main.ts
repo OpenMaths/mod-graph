@@ -51,6 +51,9 @@ class Processor {
       },
       [ActionType.CreateContentHolder]: () => {
         const contentHolder = new ContentHolder(event as CreateContentHolderEvent)
+        const { parentId } = contentHolder
+        const parent = this.nodes[parentId] as Column
+        parent.insertChild(contentHolder)
         this.nodes[contentHolder.nodeId] = contentHolder
       },
       [_def]: (type: ActionType) => {
