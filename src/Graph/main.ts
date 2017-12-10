@@ -2,6 +2,7 @@ import {
   GraphEvent,
   ActionType,
   CreateGraphEvent,
+  CreateContentHolderEvent,
 } from "@openmaths/graph-events"
 import { match, _def } from "@openmaths/utils"
 
@@ -9,6 +10,7 @@ import Graph from "./Graph"
 import Container from "./Container"
 import Row from "./Row"
 import Column from "./Column"
+import ContentHolder from "./ContentHolder"
 
 class Processor {
   nodes: { [k: string]: any }
@@ -47,8 +49,12 @@ class Processor {
         parent.insertChild(column)
         this.nodes[column.nodeId] = column
       },
-      [_def]: () => {
-        throw new Error("UNKNOWN TYPE")
+      [ActionType.CreateContentHolder]: () => {
+        const contentHolder = new ContentHolder(event as CreateContentHolderEvent)
+        this.nodes[contentHolder.nodeId] = contentHolder
+      },
+      [_def]: (type: ActionType) => {
+        throw new Error(`Error! Unknown type "${type}"`)
       },
     })
 
