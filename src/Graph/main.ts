@@ -56,6 +56,11 @@ class Processor {
 
     return this
   }
+
+  applyEvents = (events: GraphEvent[]) => {
+    events.forEach(this.applyEvent)
+    return this;
+  }
 }
 
 export default Processor
