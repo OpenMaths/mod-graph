@@ -22,7 +22,7 @@ class Leaf implements BaseNode {
 
   touch(): Leaf {
     this.modifiedAt = new Date().toISOString()
-    return this.touch()
+    return this
   }
 }
 
