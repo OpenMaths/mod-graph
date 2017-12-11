@@ -50,7 +50,9 @@ class Processor {
         this.nodes[column.nodeId] = column
       },
       [ActionType.CreateContentHolder]: () => {
-        const contentHolder = new ContentHolder(event as CreateContentHolderEvent)
+        const contentHolder = new ContentHolder(
+          event as CreateContentHolderEvent,
+        )
         const { parentId } = contentHolder
         const parent = this.nodes[parentId] as Column
         parent.insertChild(contentHolder)
@@ -68,7 +70,43 @@ class Processor {
 
   applyEvents = (events: GraphEvent[]) => {
     events.forEach(this.applyEvent)
-    return this;
+    return this
+  }
+
+  getParentRow = (columnNodeId: string): Row => {
+    const column = this.nodes[columnNodeId]
+    if (column instanceof Column) {
+      const { parentId: rowNodeId } = column
+      const row = this.nodes[rowNodeId]
+      if (row instanceof Row) {
+        return row
+      } else {
+        throw new ReferenceError(`Row "${rowNodeId}" not found`)
+      }
+    } else {
+      throw new ReferenceError(`Column "${columnNodeId}" not found`)
+    }
+  }
+
+  getParentContainer = (columnNodeId: string): Container => {
+    const column = this.nodes[columnNodeId]
+    if (column instanceof Column) {
+      const { parentId: rowNodeId } = column
+      const row = this.nodes[rowNodeId]
+      if (row instanceof Row) {
+        const { parentId: containerNodeId } = row
+        const container = this.nodes[containerNodeId]
+        if (container instanceof Container) {
+          return container
+        } else {
+          throw new ReferenceError(`Container "${containerNodeId}" not found`)
+        }
+      } else {
+        throw new ReferenceError(`Row "${rowNodeId}" not found`)
+      }
+    } else {
+      throw new ReferenceError(`Column "${columnNodeId}" not found`)
+    }
   }
 }
 
