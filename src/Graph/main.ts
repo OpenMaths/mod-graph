@@ -61,13 +61,15 @@ class Processor {
       },
       [ActionType.RemoveColumn]: () => {
         const { graphId, nodeId } = event
+
+        const column = this.nodes[nodeId] as Column
         const parentRow = this.getParentRow(nodeId)
         const parentContainer = this.getParentContainer(nodeId)
 
-        const column = this.nodes[nodeId] as Column
         if (column.child instanceof ContentHolder) {
+          const contentHolderNodeId = column.child.nodeId
           column.removeChild()
-          delete this.nodes[column.child.nodeId]
+          delete this.nodes[contentHolderNodeId]
         }
 
         parentRow.removeChild(nodeId)
