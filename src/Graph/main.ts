@@ -112,6 +112,15 @@ class Processor {
     return this
   }
 
+  getColumn = (columnNodeId: string): Column => {
+    const column = this.nodes[columnNodeId]
+    if (column instanceof Column) {
+      return column
+    } else {
+      throw new ReferenceError(`Column "${columnNodeId}" not found`)
+    }
+  }
+
   getParentRow = (columnNodeId: string): Row => {
     const column = this.nodes[columnNodeId]
     if (column instanceof Column) {
