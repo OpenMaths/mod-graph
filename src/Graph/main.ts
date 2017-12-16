@@ -64,6 +64,12 @@ class Processor {
         const parentRow = this.getParentRow(nodeId)
         const parentContainer = this.getParentContainer(nodeId)
 
+        const column = this.nodes[nodeId] as Column
+        if (column.child instanceof ContentHolder) {
+          column.removeChild()
+          delete this.nodes[column.child.nodeId]
+        }
+
         parentRow.removeChild(nodeId)
         delete this.nodes[nodeId]
 
