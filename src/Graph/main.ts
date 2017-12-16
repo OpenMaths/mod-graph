@@ -3,6 +3,7 @@ import {
   ActionType,
   CreateGraphEvent,
   CreateContentHolderEvent,
+  RemoveColumnEvent,
 } from "@openmaths/graph-events"
 import { match, _def } from "@openmaths/utils"
 
@@ -13,11 +14,11 @@ import Column from "./Column"
 import ContentHolder from "./ContentHolder"
 
 class Processor {
-  nodes: { [k: string]: any }
+  nodes: { [k: string]: Graph | Container | Row | Column | ContentHolder }
   graph: Graph
 
   constructor(event: CreateGraphEvent) {
-    this.nodes = []
+    this.nodes = {}
     this.graph = new Graph(event)
     this.nodes[this.graph.nodeId] = this.graph
   }
@@ -57,6 +58,36 @@ class Processor {
         const parent = this.nodes[parentId] as Column
         parent.insertChild(contentHolder)
         this.nodes[contentHolder.nodeId] = contentHolder
+      },
+      [ActionType.RemoveColumn]: () => {
+        const { graphId, nodeId } = event
+        const parentRow = this.getParentRow(nodeId)
+        const parentContainer = this.getParentContainer(nodeId)
+
+        parentRow.removeChild(nodeId)
+        delete this.nodes[nodeId]
+
+        if (parentRow.children.length === 0) {
+          parentContainer.removeChild(parentRow.nodeId)
+          delete this.nodes[parentRow.nodeId]
+        }
+
+        if (parentContainer.children.length === 0) {
+          const containerParent = this.nodes[parentContainer.parentId] as
+            | Column
+            | Graph
+          containerParent.removeChild()
+          delete this.nodes[parentContainer.nodeId]
+
+          if (containerParent instanceof Column) {
+            const repeat = new RemoveColumnEvent(
+              graphId,
+              containerParent.parentId,
+              containerParent.nodeId,
+            )
+            this.applyEvent(repeat)
+          }
+        }
       },
       [_def]: (type: ActionType) => {
         throw new Error(`Error! Unknown type "${type}"`)
