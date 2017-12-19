@@ -51,9 +51,7 @@ class Processor {
         this.nodes[column.nodeId] = column
       },
       [ActionType.CreateContentHolder]: () => {
-        const contentHolder = new ContentHolder(
-          event as CreateContentHolderEvent,
-        )
+        const contentHolder = new ContentHolder(event as CreateContentHolderEvent)
         const { parentId } = contentHolder
         const parent = this.nodes[parentId] as Column
         parent.insertChild(contentHolder)
@@ -81,9 +79,7 @@ class Processor {
         }
 
         if (parentContainer.children.length === 0) {
-          const containerParent = this.nodes[parentContainer.parentId] as
-            | Column
-            | Graph
+          const containerParent = this.nodes[parentContainer.parentId] as Column | Graph
           containerParent.removeChild()
           delete this.nodes[parentContainer.nodeId]
 
