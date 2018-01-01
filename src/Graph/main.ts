@@ -5,13 +5,15 @@ import {
   CreateContentHolderEvent,
   RemoveColumnEvent,
 } from "@openmaths/graph-events"
-import { match, _def } from "@openmaths/utils"
+import { isPresent, match, _def } from "@openmaths/utils"
 
 import Graph from "./Graph"
 import Container from "./Container"
 import Row from "./Row"
 import Column from "./Column"
 import ContentHolder from "./ContentHolder"
+
+import { ErrorMessage } from "../Constants"
 
 class Processor {
   nodes: { [k: string]: Graph | Container | Row | Column | ContentHolder }
@@ -32,56 +34,56 @@ class Processor {
       [ActionType.CreateContainer]: () => {
         const container = new Container(event)
         const { parentId } = container
-        const parent = this.nodes[parentId] as Graph
-        parent.insertChild(container)
+        const graph = this.getGraph(parentId)
+        graph.insertChild(container)
         this.nodes[container.nodeId] = container
       },
       [ActionType.CreateRow]: () => {
         const row = new Row(event)
         const { parentId } = row
-        const parent = this.nodes[parentId] as Container
-        parent.insertChild(row)
+        const container = this.getContainer(parentId)
+        container.insertChild(row)
         this.nodes[row.nodeId] = row
       },
       [ActionType.CreateColumn]: () => {
         const column = new Column(event)
         const { parentId } = column
-        const parent = this.nodes[parentId] as Row
-        parent.insertChild(column)
+        const row = this.getRow(parentId)
+        row.insertChild(column)
         this.nodes[column.nodeId] = column
       },
       [ActionType.CreateContentHolder]: () => {
         const contentHolder = new ContentHolder(event as CreateContentHolderEvent)
         const { parentId } = contentHolder
-        const parent = this.nodes[parentId] as Column
-        parent.insertChild(contentHolder)
+        const column = this.getColumn(parentId)
+        column.insertChild(contentHolder)
         this.nodes[contentHolder.nodeId] = contentHolder
       },
       [ActionType.RemoveColumn]: () => {
         const { graphId, nodeId } = event
 
-        const column = this.nodes[nodeId] as Column
+        const column = this.getColumn(nodeId)
         const parentRow = this.getParentRow(nodeId)
         const parentContainer = this.getParentContainer(nodeId)
 
         if (column.child instanceof ContentHolder) {
           const contentHolderNodeId = column.child.nodeId
           column.removeChild()
-          delete this.nodes[contentHolderNodeId]
+          this.removeNode(contentHolderNodeId)
         }
 
         parentRow.removeChild(nodeId)
-        delete this.nodes[nodeId]
+        this.removeNode(nodeId)
 
         if (parentRow.children.length === 0) {
           parentContainer.removeChild(parentRow.nodeId)
-          delete this.nodes[parentRow.nodeId]
+          this.removeNode(parentRow.nodeId)
         }
 
         if (parentContainer.children.length === 0) {
-          const containerParent = this.nodes[parentContainer.parentId] as Column | Graph
+          const containerParent = this.getContainerParent(parentContainer.nodeId)
           containerParent.removeChild()
-          delete this.nodes[parentContainer.nodeId]
+          this.removeNode(parentContainer.nodeId)
 
           if (containerParent instanceof Column) {
             const repeat = new RemoveColumnEvent(
@@ -93,8 +95,14 @@ class Processor {
           }
         }
       },
+      [ActionType.RemoveContentHolder]: () => {
+        const { nodeId, parentId } = event
+        const parent = this.getColumn(parentId)
+        parent.removeChild()
+        this.removeNode(nodeId)
+      },
       [_def]: (type: ActionType) => {
-        throw new Error(`Error! Unknown type "${type}"`)
+        throw new Error(ErrorMessage.UnknownActionType(type))
       },
     })
 
@@ -108,12 +116,50 @@ class Processor {
     return this
   }
 
+  removeNode = (nodeId: string) => {
+    if (isPresent(this.nodes[nodeId])) {
+      delete this.nodes[nodeId]
+    } else {
+      // @TODO possibly only console warning
+      throw new ReferenceError(ErrorMessage.FailedDeleteAttempt(nodeId))
+    }
+
+    return this
+  }
+
   getColumn = (columnNodeId: string): Column => {
     const column = this.nodes[columnNodeId]
     if (column instanceof Column) {
       return column
     } else {
-      throw new ReferenceError(`Column "${columnNodeId}" not found`)
+      throw new ReferenceError(ErrorMessage.ColumnNotFound(columnNodeId))
+    }
+  }
+
+  getRow = (rowNodeId: string): Row => {
+    const row = this.nodes[rowNodeId]
+    if (row instanceof Row) {
+      return row
+    } else {
+      throw new ReferenceError(ErrorMessage.RowNotFound(rowNodeId))
+    }
+  }
+
+  getContainer = (containerNodeId: string): Container => {
+    const container = this.nodes[containerNodeId]
+    if (container instanceof Container) {
+      return container
+    } else {
+      throw new ReferenceError(ErrorMessage.ContainerNotFound(containerNodeId))
+    }
+  }
+
+  getGraph = (graphNodeId: string): Graph => {
+    const graph = this.nodes[graphNodeId]
+    if (graph instanceof Graph) {
+      return graph
+    } else {
+      throw new ReferenceError(ErrorMessage.GraphNotFound(graphNodeId))
     }
   }
 
@@ -125,10 +171,10 @@ class Processor {
       if (row instanceof Row) {
         return row
       } else {
-        throw new ReferenceError(`Row "${rowNodeId}" not found`)
+        throw new ReferenceError(ErrorMessage.RowNotFound(rowNodeId))
       }
     } else {
-      throw new ReferenceError(`Column "${columnNodeId}" not found`)
+      throw new ReferenceError(ErrorMessage.ColumnNotFound(columnNodeId))
     }
   }
 
@@ -143,13 +189,23 @@ class Processor {
         if (container instanceof Container) {
           return container
         } else {
-          throw new ReferenceError(`Container "${containerNodeId}" not found`)
+          throw new ReferenceError(ErrorMessage.ContainerNotFound(containerNodeId))
         }
       } else {
-        throw new ReferenceError(`Row "${rowNodeId}" not found`)
+        throw new ReferenceError(ErrorMessage.RowNotFound(rowNodeId))
       }
     } else {
-      throw new ReferenceError(`Column "${columnNodeId}" not found`)
+      throw new ReferenceError(ErrorMessage.ColumnNotFound(columnNodeId))
+    }
+  }
+
+  getContainerParent = (containerNodeId: string): Column | Graph => {
+    const { parentId } = this.getContainer(containerNodeId)
+    const parent = this.nodes[parentId]
+    if (parent instanceof Column || parent instanceof Graph) {
+      return parent as Column | Graph
+    } else {
+      throw new ReferenceError(ErrorMessage.ColumnOrGraphNotFound(parentId))
     }
   }
 }
