@@ -33,9 +33,10 @@ class Processor {
       },
       [ActionType.CreateContainer]: () => {
         const container = new Container(event)
-        const { parentId } = container
-        const graph = this.getGraph(parentId)
-        graph.insertChild(container)
+        const { parentId } = event
+        const parent = this.nodes[parentId] as Graph | Column
+        // @TODO this "as any" is a hack due to some odd compile error
+        ;(parent as any).insertChild(container)
         this.nodes[container.nodeId] = container
       },
       [ActionType.CreateRow]: () => {
