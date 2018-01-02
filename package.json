@@ -1,6 +1,6 @@
 {
   "name": "@openmaths/graph",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "The Graph Module",
   "main": "./dist/main.js",
   "typings": "./dist/main.d.ts",
